@@ -6,11 +6,11 @@ let package = Package(
     defaultLocalization: "en",
     platforms: [.iOS(.v16), .macOS(.v13), .tvOS(.v16), .watchOS(.v9), .macCatalyst(.v16)],
     products: [
-        .library(name: "SkipModel", type: .dynamic, targets: ["SkipModel"]),
+        .library(name: "SkipModel", targets: ["SkipModel"]),
     ],
     dependencies: [
-        .package(url: "https://source.skip.tools/skip.git", from: "0.6.68"),
-        .package(url: "https://source.skip.tools/skip-foundation.git", from: "0.1.23"),
+        .package(url: "https://source.skip.tools/skip.git", from: "0.6.70"),
+        .package(url: "https://source.skip.tools/skip-foundation.git", from: "0.2.0"),
     ],
     targets: [
         .target(name: "SkipModel", dependencies: [.product(name: "SkipFoundation", package: "skip-foundation")], plugins: [.plugin(name: "skipstone", package: "skip")]),
