@@ -18,7 +18,7 @@ From the `Observation` package, SkipModel supports the `@Observable` and `@Obser
 
 From `Combine`, SkipModel supports the `ObservableObject` protocol and `@Published` property wrapper.
 
-Most of SkipModel's support is implemented directly in the Skip transpiler. In fact, SkipModel itself contains only empty `Observable` and `ObservableObject` marker protocols. These marker protocols are are sufficient for the Skip transpiler to recognize your observable types. When generating the corresponding Kotlin classes, the transpiler then adds the necessary code so that their state can be tracked by the Compose runtime.
+Most of Skip's model support is implemented directly in the Skip transpiler. In fact, SkipModel itself contains only empty `Observable` and `ObservableObject` marker protocols. These marker protocols are are sufficient for the Skip transpiler to recognize your observable types. When generating their corresponding Kotlin classes, the transpiler then adds the necessary code so that their state can be tracked by the Compose runtime.
 
 Note that other than recognizing the `ObservableObject` and `@Published` markers, SkipModel does not support the Combine API.
 
@@ -26,4 +26,5 @@ Note that other than recognizing the `ObservableObject` and `@Published` markers
 
 We welcome contributions to SkipModel. The Skip product documentation includes helpful instructions on [local Skip library development](https://skip.tools/docs/#local-libraries). 
 
-All forms of contributions are considered, including test cases, comments, and documentation. When submitting code, please include unit tests in your [PR](https://github.com/skiptools/skip-lib/pulls).
+There are no immediate plans to support additional Combine or Observation module API, but all forms of contributions are considered. That includes test cases, comments, and documentation. When submitting code, please include unit tests in your [PR](https://github.com/skiptools/skip-lib/pulls).
+
