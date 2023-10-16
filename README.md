@@ -8,9 +8,9 @@ SkipModel vends the `skip.model` Kotlin package. This package contains `Observab
 
 ## Dependencies
 
-SkipLib depends on the [skip](https://source.skip.tools/skip) transpiler plugin and the [SkipFoundation](https://source.skip.tools/skip-foundation) library.
+SkipLib depends on the [skip](https://source.skip.tools/skip) transpiler plugin and the [SkipLib](https://source.skip.tools/skip-lib) package.
 
-SkipLib is part of the core Skip stack and is not intended to be imported directly. The transpiler includes `import skip.model.*` in generated Kotlin for any Swift source that imports the `Combine`, `Observation`, or `SwiftUI` frameworks.
+SkipModel is part of the core *skipstack* and is not intended to be imported directly. The transpiler includes `import skip.model.*` in generated Kotlin for any Swift source that imports the `Combine`, `Observation`, or `SwiftUI` frameworks.
 
 ## Status
 
