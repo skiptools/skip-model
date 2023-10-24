@@ -24,7 +24,7 @@ Note that other than recognizing the `ObservableObject` and `@Published` markers
 
 ## Contributing
 
-We welcome contributions to SkipModel. The Skip product documentation includes helpful instructions on [local Skip library development](https://skip.tools/docs/#local-libraries). 
+We welcome contributions to SkipModel. The Skip product documentation includes helpful instructions on [local Skip library development](https://skip.tools/docs/). 
 
 There are no immediate plans to support additional Combine or Observation module API, but all forms of contributions are considered. That includes test cases, comments, and documentation. When submitting code, please include unit tests in your [PR](https://github.com/skiptools/skip-model/pulls).
 
