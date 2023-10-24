@@ -10,7 +10,7 @@ SkipModel vends the `skip.model` Kotlin package. This package contains `Observab
 
 SkipLib depends on the [skip](https://source.skip.tools/skip) transpiler plugin and the [SkipLib](https://source.skip.tools/skip-lib) package.
 
-SkipModel is part of the core *skipstack* and is not intended to be imported directly. The transpiler includes `import skip.model.*` in generated Kotlin for any Swift source that imports the `Combine`, `Observation`, or `SwiftUI` frameworks.
+SkipModel is part of the core *SkipStack* and is not intended to be imported directly. The transpiler includes `import skip.model.*` in generated Kotlin for any Swift source that imports the `Combine`, `Observation`, or `SwiftUI` frameworks.
 
 ## Status
 
@@ -24,7 +24,7 @@ Note that other than recognizing the `ObservableObject` and `@Published` markers
 
 ## Contributing
 
-We welcome contributions to SkipModel. The Skip product documentation includes helpful instructions on [local Skip library development](https://skip.tools/docs/). 
+We welcome contributions to SkipModel. The Skip product [documentation](https://skip.tools/docs) includes helpful instructions on local Skip library development. 
 
 There are no immediate plans to support additional Combine or Observation module API, but all forms of contributions are considered. That includes test cases, comments, and documentation. When submitting code, please include unit tests in your [PR](https://github.com/skiptools/skip-model/pulls).
 
