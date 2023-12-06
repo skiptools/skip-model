@@ -5,6 +5,7 @@
 // as published by the Free Software Foundation https://fsf.org
 
 import Combine
+import Foundation
 import XCTest
 
 @available(macOS 13, macCatalyst 16, iOS 16, tvOS 16, watchOS 8, *)
@@ -114,8 +115,31 @@ final class SkipModelTests: XCTestCase {
         model.$value.sink { _ in  }.store(in: &cancellables)
         XCTAssertEqual(cancellables.count, 1)
     }
+
+    func testNotificationCenter() {
+        var published = 0
+        let cancellable = NotificationCenter.default.publisher(for: .testNotification)
+            .sink {
+                XCTAssertEqual($0.name, Notification.Name.testNotification)
+                published += 1
+            }
+        XCTAssertEqual(published, 0)
+        NotificationCenter.default.post(name: .testNotification, object: nil)
+        XCTAssertEqual(published, 1)
+        NotificationCenter.default.post(name: .testNotification, object: nil)
+        XCTAssertEqual(published, 2)
+        cancellable.cancel()
+        NotificationCenter.default.post(name: .testNotification, object: nil)
+        XCTAssertEqual(published, 2)
+    }
 }
 
 class Model: ObservableObject {
     @Published var value = 0
+}
+
+extension Notification.Name {
+    static var testNotification: Notification.Name {
+        return Notification.Name("test")
+    }
 }

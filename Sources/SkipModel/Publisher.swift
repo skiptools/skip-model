@@ -68,4 +68,10 @@ public final class ObservableObjectPublisher : Publisher {
     }
 }
 
+extension NotificationCenter {
+    public func publisher(for: Notification.Name, object: AnyObject? = nil) -> Publisher<Notification, Never> {
+        fatalError()
+    }
+}
+
 #endif

@@ -6,6 +6,8 @@
 package skip.model
 
 import android.os.Looper
+import java.lang.ref.WeakReference
+import java.util.LinkedList
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -14,12 +16,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import skip.foundation.DispatchQueue
+import skip.foundation.Notification
+import skip.foundation.NotificationCenter
 import skip.foundation.RunLoop
 import skip.foundation.Scheduler
 import skip.lib.Long
 import skip.lib.Never
-import java.lang.ref.WeakReference
-import java.util.LinkedList
 
 interface Publisher<Output, Failure> {
     fun sink(receiveValue: (Output) -> Unit): AnyCancellable
@@ -67,6 +69,14 @@ class ObservableObjectPublisher : Publisher<Unit, Never> {
     override fun sink(receiveValue: (Unit) -> Unit): AnyCancellable = helper.sink(receiveValue)
 
     fun send() = helper.send(Unit)
+}
+
+fun NotificationCenter.publisher(for_: Notification.Name, object_: Any? = null): Publisher<Notification, Never> {
+    val publisher = NotificationCenterPublisher(center = this)
+    publisher.observer = addObserver(forName = for_, object_ = object_, queue = null) {
+        publisher.send(it)
+    }
+    return publisher
 }
 
 /// Helper to implement subjects and publishers.
@@ -122,6 +132,37 @@ internal class SubjectHelper<Output, Failure> {
     private class Sink<Output>(val onReceive: (Output) -> Unit, val onCancel: () -> Unit) : Cancellable {
         override fun cancel() {
             onCancel()
+        }
+    }
+}
+
+private class NotificationCenterPublisher(val center: NotificationCenter) : Publisher<Notification, Never> {
+    var observer: Any? = null
+    private val helper = SubjectHelper<Notification, Never>()
+
+    override fun sink(receiveValue: (Notification) -> Unit): AnyCancellable {
+        // Vend cancellables that reference this publisher. The publisher will deregister from the notification center only
+        // when it finalizes after all these references are gone
+        val internalCancellable = helper.sink(receiveValue)
+        val referencingCancellable = object: Cancellable {
+            var publisher: NotificationCenterPublisher? = this@NotificationCenterPublisher
+
+            override fun cancel() {
+                publisher = null
+                internalCancellable.cancel()
+            }
+        }
+        return AnyCancellable(referencingCancellable)
+    }
+
+    fun send(notification: Notification) {
+        helper.send(notification)
+    }
+
+    fun finalize() {
+        val observer = this.observer
+        if (observer != null) {
+            center.removeObserver(observer)
         }
     }
 }
