@@ -64,8 +64,8 @@ private class PropertySubject<Output, Failure> : Subject<Output, Failure> {
     }
 
     override func send(value: Output) {
-        current = value
         helper.send(value)
+        current = value
     }
 }
 
