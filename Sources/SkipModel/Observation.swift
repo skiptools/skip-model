@@ -12,7 +12,7 @@ public protocol Observable {
 
 /// Kotlin representation of `Combine.ObservableObject`.
 public protocol ObservableObject {
-    // No Publisher support
+    var objectWillChange: ObservableObjectPublisher { get }
 }
 
 #endif

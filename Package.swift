@@ -10,10 +10,10 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://source.skip.tools/skip.git", from: "0.7.28"),
-        .package(url: "https://source.skip.tools/skip-lib.git", from: "0.5.5"),
+        .package(url: "https://source.skip.tools/skip-foundation.git", from: "0.3.8"),
     ],
     targets: [
-        .target(name: "SkipModel", dependencies: [.product(name: "SkipLib", package: "skip-lib")], plugins: [.plugin(name: "skipstone", package: "skip")]),
+        .target(name: "SkipModel", dependencies: [.product(name: "SkipFoundation", package: "skip-foundation")], plugins: [.plugin(name: "skipstone", package: "skip")]),
         .testTarget(name: "SkipModelTests", dependencies: ["SkipModel", .product(name: "SkipTest", package: "skip")], plugins: [.plugin(name: "skipstone", package: "skip")]),
     ]
 )
