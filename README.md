@@ -28,44 +28,7 @@ We welcome contributions to SkipModel. The Skip product [documentation](https://
 
 Like Skip itself, SkipModel objects are dual-platform! Not only do your `@Observable` and `ObservableObject` properties participate in SwiftUI state tracking, but they are tracked by Compose as well. The Skip transpiler backs your observable properties with `MutableState` values in Kotlin, so Compose automatically tracks reads and writes and [performs recomposition as needed](https://developer.android.com/jetpack/compose/state).
 
-This means that you can write shared model-layer Swift code using observable objects, and use it to power both SwiftUI (whether iOS-only or dual-platform with Skip) as well as pure Android Compose UI code.
-
-There is only one thing to remember: your observable objects don't activate `MutableState` property backing until you invoke the `trackstate()` function. This is a special function that Skip adds to the Android version of your observable types:
-
-```kotlin
-#if SKIP
-
-/// Kotlin representation of `Observation.Observable`.
-public protocol Observable : ComposeStateTracking {
-}
-
-/// Kotlin representation of `Combine.ObservableObject`.
-public protocol ObservableObject : ComposeStateTracking {
-    var objectWillChange: ObservableObjectPublisher { get }
-}
-
-/// A type whose changes can be tracked by Compose.
-public protocol ComposeStateTracking {
-    /// Begin tracking changes to this object for Compose.
-    ///
-    /// The receiver will create `MutableState` backing for its observable properties on first call to this
-    /// function. We delay Compose state tracking until an object is being observed in a `View` body to
-    /// prevent infinite recompose when:
-    ///
-    /// - Parent view `P` creates child view `V`
-    /// - On construction, `V` creates observable `@StateObject` `O`
-    /// - Either `O` or `V` both read and update one of `O`'s observable properties in their constructors
-    ///
-    /// If `O`'s properites were immediately backed by `MutableState`, that sequence would cause the state
-    /// to be both read and updated in the context of `P`, causing `P` to recompose and recreate `V`, which
-    /// would recreate `O` and cause the cycle to repeat.
-    public func trackstate()
-}
-
-#endif
-```
-
-Skip automatically calls `trackstate()` on your objects when you use them in shared SwiftUI code. But you have to call it yourself when using them with your own Compose. So if you defined the following type in your shared Swift code:
+This means that you can write shared model-layer Swift code using observable objects, and use it to power both SwiftUI (whether iOS-only or dual-platform with Skip) as well as pure Android Compose UI code. For example, the following model class:
 
 ```swift
 @Observable class TapCounter {
@@ -73,11 +36,10 @@ Skip automatically calls `trackstate()` on your objects when you use them in sha
 }
 ```
 
-Then you could use it in your Compose code like so:
+could power a Compose UI:
 
 ```kotlin
 val tapCounter = TapCounter()
-tapCounter.trackstate()
 ...
 TapIt(counter = tapCounter)
 ...

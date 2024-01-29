@@ -10,12 +10,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
 /// We model `@Published` properties as Kotlin `MutableState` so that Compose will track its values.
-public final class Published<Value> {
+public final class Published<Value>: StateTracker {
     private let subject: PropertySubject<Value, Never>
     private var state: MutableState<Value>?
 
     public init(wrappedValue: Value) {
         subject = PropertySubject(initialValue: wrappedValue)
+        StateTracking.register(self)
     }
 
     public var wrappedValue: Value {
@@ -36,8 +37,7 @@ public final class Published<Value> {
         return subject
     }
 
-    /// Begin tracking Composable state changes.
-    public func track() {
+    public func trackState() {
         // Once we create our internal MutableState, reads and writes will be tracked by Compose
         if state == nil {
             state = mutableStateOf(subject.current)

@@ -11,9 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 
 /// We model properties of `@Observable` types as if they had this synthetic `@Observed` property wrapper.
 /// Like `Published`, it uses `MutableState` to tie into Compose's observation system.
-public final class Observed<Value> {
+public final class Observed<Value>: StateTracker {
     public init(wrappedValue: Value) {
         _wrappedValue = wrappedValue
+        StateTracking.register(self)
     }
 
     public var wrappedValue: Value {
@@ -35,8 +36,7 @@ public final class Observed<Value> {
 
     public var projectedValue: MutableState<Value>?
 
-    /// Begin tracking Composable state changes.
-    public func track() {
+    public func trackState() {
         // Once we create our internal MutableState, reads and writes will be tracked by Compose
         if projectedValue == nil {
             projectedValue = mutableStateOf(_wrappedValue)
