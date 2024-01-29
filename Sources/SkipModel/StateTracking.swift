@@ -19,13 +19,14 @@ public protocol StateTracker {
 /// Manage observable state tracking.
 public final class StateTracking {
     #if SKIP
-    private static let contexts: MutableList<MutableList<StateTracker>> = mutableListOf()
+    private static var bodyDepth = 0
+    private static let trackers: MutableList<StateTracker> = mutableListOf()
     #endif
 
     /// Register a state tracker to call when state tracking should begin.
     ///
-    /// If there is a current context, delays state tracking until the context is popped so that creating
-    /// and updating an observable in the same context does not result in a potential infinite loop:
+    /// If a body is executing, delays state tracking until the body completes or a new body begins executing.
+    /// This is meant to avoid infinite recomposition in scenarios like the following:
     ///
     /// - Parent view `P` creates child view `V`
     /// - On construction, `V` creates observable `@StateObject` `O`
@@ -34,10 +35,14 @@ public final class StateTracking {
     /// If `O`'s properites were immediately backed by `MutableState`, that sequence would cause the state
     /// to be both read and updated in the context of `P`, causing `P` to recompose and recreate `V`, which
     /// would recreate `O` and cause the cycle to repeat.
+    ///
+    /// We also considered tracking view construction rather than body execution. But it's possible that `P` creates
+    /// and mutates `O` before passing it to `V`, or that `V` does so in a factory function, so view construction
+    /// may be too limited.
     public static func register(_ tracker: StateTracker) {
         #if SKIP
-        if isMainThread, let context = contexts.lastOrNull() {
-            context.add(tracker)
+        if isMainThread && bodyDepth > 0 {
+            trackers.add(tracker)
         } else {
             tracker.trackState()
         }
@@ -46,28 +51,38 @@ public final class StateTracking {
         #endif
     }
 
-    /// Push an observation context.
-    public static func pushContext() {
+    /// Push a body execution.
+    public static func pushBody() {
         #if SKIP
         if isMainThread {
-            contexts.add(mutableListOf<StateTracker>())
+            bodyDepth += 1
+            activateTrackers()
         }
         #endif
     }
 
-    /// Pop the current observation context.
-    public static func popContext() {
+    /// Pop a body execution.
+    public static func popBody() {
         #if SKIP
-        guard isMainThread, let context = contexts.removeLastOrNull() else {
-            return
-        }
-        for tracker in context {
-            tracker.trackState()
+        if isMainThread && bodyDepth > 0 {
+            bodyDepth -= 1
+            activateTrackers()
         }
         #endif
     }
 
     #if SKIP
+    private static func activateTrackers() {
+        guard !trackers.isEmpty() else {
+            return
+        }
+        let trackersArray = trackers.toTypedArray()
+        trackers.clear()
+        for tracker in trackersArray {
+            tracker.trackState()
+        }
+    }
+
     private static var isMainThread: Bool {
         // Looper not mocked for Roboelectric and will cause test exceptions, so use `try`
         return try? (Looper.myLooper() == Looper.getMainLooper()) ?? false
