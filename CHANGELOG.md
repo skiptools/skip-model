@@ -1,3 +1,9 @@
+## 0.5.1
+
+Released 2024-02-08
+
+  - Revert from androidx-compose-bom 2024.01.00 to 2023.10.01 to work around https://issuetracker.google.com/issues/322214617
+
 ## 0.5.0
 
 Released 2024-02-05
