@@ -2,6 +2,8 @@
 
 Model object observation for [Skip](https://skip.tools) apps.
 
+See what API is included [here](#api-support).
+
 ## About 
 
 SkipModel vends the `skip.model` Kotlin package. This package contains `Observable` and `ObservableObject` interfaces, representing the two core protocols that SwiftUI uses to observe changes to model objects. It also includes limited `Publisher` support.
@@ -16,7 +18,7 @@ SkipModel is part of the core *SkipStack* and is not intended to be imported dir
 
 From the `Observation` package, SkipModel supports the `@Observable` and `@ObservationIgnored` macros.
 
-From `Combine`, SkipModel supports the `ObservableObject` protocol, the `@Published` property wrapper, and limited `Publisher` functionality. See [Combine support](#combine-support) below.
+From `Combine`, SkipModel supports the `ObservableObject` protocol, the `@Published` property wrapper, and limited `Publisher` functionality. See [API support](#api-support) below.
 
 Much of Skip's model support is implemented directly in the Skip transpiler. The `Observable` and `ObservableObject` marker protocols are are sufficient for the Skip transpiler to recognize your observable types. When generating their corresponding Kotlin classes, the transpiler then adds the necessary code so that their state can be tracked by the Compose runtime.
 
@@ -50,23 +52,118 @@ TapIt(counter = tapCounter)
 }
 ```
 
-## Combine Support
+## API Support
 
-SkipModel supports the following Combine types and operations. Note that in all cases the `Failure` type must be `Never`: throwing errors in Combine chains is not supported.
+The following table summarizes SkipModel's API support on Android. Anything not listed here is likely not supported. Note that in your iOS-only code - i.e. code within `#if !SKIP` blocks - you can use any SwiftUI you want.
 
-|Component|Notes|
-|---------|-----|
-|`AnyCancellable`||
-|`Cancellable`||
-|`ObservableObject`||
-|`PassthroughSubject`||
-|`@Published`||
-|`Publisher`||
-|`Subject`||
-|`.debounce(for:scheduler:)`|Only seconds as `Double` and `RunLoop.main`/`DispatchQueue.main` supported|
-|`.dropFirst`||
-|`.filter`||
-|`.map`||
-|`.receive(on:)`|Only `RunLoop.main`/`DispatchQueue.main` supported|
-|`.store(in:)` (AnyCancellable)|Must store in a `Set`|
+In all Combine publishes and related API, the `Failure` type must be `Never`: throwing errors in Combine chains is not supported.
 
+Support levels:
+
+  - ✅ – Full
+  - 🟢 – High
+  - 🟡 – Medium 
+  - 🔴 – Low
+  
+<table>
+  <thead><th>Support</th><th>API</th></thead>
+  <tbody>
+    <tr>
+      <td>🟢</td>
+      <td>
+          <details>
+              <summary><code>AnyCancellable</code></summary>
+              <ul>
+                  <li>See <code>Cancellable</code></li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+    <tr>
+      <td>🟢</td>
+      <td>
+          <details>
+              <summary><code>Cancellable</code></summary>
+              <ul>
+                  <li>The <code>store(in:)</code> function only supports a <code>Set</code></li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>func NotificationCenter.publisher(for_: Notification.Name, object_: Any? = nil): Publisher&lt;Notification, Never&gt;</code></td>
+    </tr>
+    <tr>
+      <td>🟢</td>
+      <td>
+          <details>
+              <summary><code>@Observable</code></summary>
+              <ul>
+                  <li>Skip does not support calls to the generated <code>access(keyPath:)</code> and <code>withMutation(keyPath:_:)</code> functions</li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+    <tr>
+      <td>🟢</td>
+      <td>
+            <details>
+              <summary><code>ObservableObject</code></summary>
+              <ul>
+                  <li>If you declare your own <code>objectWillChange</code> publisher, it must be of type <code>ObservableObjectPublisher</code></li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+    <tr>
+      <td>🔴</td>
+      <td>
+            <details>
+              <summary><code>ObservableObjectPublisher</code></summary>
+              <ul>
+                  <li><code>func send()</code></li>
+                  <li>See <code>Publisher</code></li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>@ObservationIgnored</code></td>
+    </tr>
+    <tr>
+      <td>🔴</td>
+      <td>
+          <details>
+              <summary><code>PassthroughSubject</code></summary>
+              <ul>
+                  <li><code>func send(value: Output)</code></li>
+                  <li>See <code>Publisher</code></li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>@Published</code></td>
+    </tr>
+    <tr>
+      <td>🔴</td>
+      <td>
+          <details>
+              <summary><code>Publisher</code></summary>
+              <ul>
+<li><code>func assign&lt;Root&gt;(to: KeyPath&lt;Root, Output&gt;, on: Root) -> AnyCancellable</code></li>
+<li><code>func sink(receiveValue: (Output) -> Unit) -> AnyCancellable</code></li>
+<li><code>func debounce(for: Double, scheduler: Scheduler) -> Publisher</code></li>
+<li><code>func dropFirst(count: Int = 1) -> Publisher</code></li>
+<li><code>func filter(isIncluded: (Output) -> Boolean) -> Publisher</code></li>
+<li><code>func map&lt;T&gt;(transform: (Output) -> T) -> Publisher</code></li>
+<li><code>func receive(on: Scheduler): Publisher</code></li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+  </tbody>
+</table>
