@@ -1,3 +1,9 @@
+## 0.5.4
+
+Released 2024-02-18
+
+  - Move API list to end of README
+
 ## 0.5.2
 
 Released 2024-02-10
