@@ -54,7 +54,7 @@ TapIt(counter = tapCounter)
 
 ## API Support
 
-The following table summarizes SkipModel's API support on Android. Anything not listed here is likely not supported. Note that in your iOS-only code - i.e. code within `#if !SKIP` blocks - you can use any SwiftUI you want.
+The following table summarizes SkipModel's API support on Android. Anything not listed here is likely not supported. Note that in your iOS-only code - i.e. code within `#if !SKIP` blocks - you can use any Swift API you want.
 
 In all Combine publishes and related API, the `Failure` type must be `Never`: throwing errors in Combine chains is not supported.
 
