@@ -1,3 +1,17 @@
+## 0.6.0
+
+Released 2024-04-21
+
+  - ci: update workflow actions location
+  - Update README.md
+
+## 0.5.5
+
+Released 2024-04-21
+
+  - ci: update workflow actions location
+  - Update README.md
+
 ## 0.5.4
 
 Released 2024-02-18
