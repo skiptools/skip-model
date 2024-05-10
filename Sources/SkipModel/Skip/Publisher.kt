@@ -16,8 +16,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import skip.foundation.DispatchQueue
-import skip.foundation.Notification
-import skip.foundation.NotificationCenter
 import skip.foundation.RunLoop
 import skip.foundation.Scheduler
 import skip.lib.Long
@@ -51,6 +49,14 @@ interface Publisher<Output, Failure> {
     }
 }
 
+interface ConnectablePublisher<Output, Failure> : Publisher<Output, Failure> {
+    fun connect(): Cancellable
+
+    fun autoconnect(): Publisher<Output, Failure> {
+        return AutoconnectPublisher(this)
+    }
+}
+
 interface Subject<Output, Failure> : Publisher<Output, Failure> {
     fun send(value: Output)
 }
@@ -71,14 +77,6 @@ class ObservableObjectPublisher : Publisher<Unit, Never> {
     fun send() = helper.send(Unit)
 }
 
-fun NotificationCenter.publisher(for_: Notification.Name, object_: Any? = null): Publisher<Notification, Never> {
-    val publisher = NotificationCenterPublisher(center = this)
-    publisher.observer = addObserver(forName = for_, object_ = object_, queue = null) {
-        publisher.send(it)
-    }
-    return publisher
-}
-
 /// Helper to implement subjects and publishers.
 internal class SubjectHelper<Output, Failure> {
     // Keep sinks in order
@@ -86,8 +84,9 @@ internal class SubjectHelper<Output, Failure> {
 
     fun sink(receiveValue: (Output) -> Unit): AnyCancellable {
         val cancellable = AnyCancellable()
+        val lock = this
         cancellable.cancellable = Sink(onReceive = receiveValue, onCancel = {
-            synchronized(this) {
+            synchronized(lock) {
                 val itr = sinks?.listIterator()
                 if (itr != null) {
                     while (itr.hasNext()) {
@@ -99,7 +98,7 @@ internal class SubjectHelper<Output, Failure> {
                 }
             }
         })
-        synchronized(this) {
+        synchronized(lock) {
             if (sinks == null) {
                 sinks = LinkedList()
             }
@@ -136,34 +135,33 @@ internal class SubjectHelper<Output, Failure> {
     }
 }
 
-private class NotificationCenterPublisher(val center: NotificationCenter) : Publisher<Notification, Never> {
-    var observer: Any? = null
-    private val helper = SubjectHelper<Notification, Never>()
+private class AutoconnectPublisher<Output, Failure>(val publisher: ConnectablePublisher<Output, Failure>): Publisher<Output, Failure> {
+    private var connection: Cancellable? = null
+    private var subscribers = 0
 
-    override fun sink(receiveValue: (Notification) -> Unit): AnyCancellable {
-        // Vend cancellables that reference this publisher. The publisher will deregister from the notification center only
-        // when it finalizes after all these references are gone
-        val internalCancellable = helper.sink(receiveValue)
-        val referencingCancellable = object: Cancellable {
-            var publisher: NotificationCenterPublisher? = this@NotificationCenterPublisher
-
-            override fun cancel() {
-                publisher = null
-                internalCancellable.cancel()
+    override fun sink(receiveValue: (Output) -> Unit): AnyCancellable {
+        val lock = this
+        synchronized(lock) {
+            subscribers++
+            if (subscribers == 1) {
+                connection = publisher.connect()
             }
         }
-        return AnyCancellable(referencingCancellable)
-    }
-
-    fun send(notification: Notification) {
-        helper.send(notification)
+        val cancellable = publisher.sink(receiveValue)
+        return AnyCancellable {
+            cancellable.cancel()
+            synchronized(lock) {
+                subscribers--
+                if (subscribers <= 0) {
+                    connection?.cancel()
+                    connection = null
+                }
+            }
+        }
     }
 
     fun finalize() {
-        val observer = this.observer
-        if (observer != null) {
-            center.removeObserver(observer)
-        }
+        connection?.cancel()
     }
 }
 

@@ -91,8 +91,21 @@ Support levels:
       </td>
     </tr>
     <tr>
+      <td>🔴</td>
+      <td>
+          <details>
+              <summary><code>ConnectablePublisher</code></summary>
+              <ul>
+                  <li><code>func connect()</code></li>
+                  <li><code>func autoconnect()</code></li>
+                  <li>See <code>Publisher</code></li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+    <tr>
       <td>✅</td>
-      <td><code>func NotificationCenter.publisher(for_: Notification.Name, object_: Any? = nil): Publisher&lt;Notification, Never&gt;</code></td>
+      <td><code>func NotificationCenter.publisher(for: Notification.Name, object: Any? = nil): Publisher&lt;Notification, Never&gt;</code></td>
     </tr>
     <tr>
       <td>🟢</td>
@@ -164,6 +177,10 @@ Support levels:
               </ul>
           </details> 
       </td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>func Timer.publish(every: TimeInterval, tolerance: TimeInterval? = nil, on runLoop: RunLoop, in mode: RunLoop.Mode, options: RunLoop.SchedulerOptions? = nil) -> ConnectablePublisher&lt;Date, Never&gt;</code></li>
     </tr>
   </tbody>
 </table>

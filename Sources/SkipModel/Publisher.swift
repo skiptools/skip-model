@@ -45,6 +45,11 @@ extension Publisher {
     }
 }
 
+public protocol ConnectablePublisher<Output, Failure> : Publisher {
+    func connect() -> Cancellable
+    func autoconnect() -> Publisher<Output, Failure>
+}
+
 public protocol Subject<Output, Failure> : AnyObject, Publisher {
     func send(_ value: Output)
 }
@@ -65,12 +70,6 @@ public final class ObservableObjectPublisher : Publisher {
     }
 
     public func send() {
-    }
-}
-
-extension NotificationCenter {
-    public func publisher(for: Notification.Name, object: AnyObject? = nil) -> Publisher<Notification, Never> {
-        fatalError()
     }
 }
 
