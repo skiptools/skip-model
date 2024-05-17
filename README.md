@@ -63,7 +63,7 @@ Support levels:
   - ✅ – Full
   - 🟢 – High
   - 🟡 – Medium 
-  - 🔴 – Low
+  - 🟠 – Low
   
 <table>
   <thead><th>Support</th><th>API</th></thead>
@@ -91,7 +91,7 @@ Support levels:
       </td>
     </tr>
     <tr>
-      <td>🔴</td>
+      <td>🟠</td>
       <td>
           <details>
               <summary><code>ConnectablePublisher</code></summary>
@@ -130,7 +130,7 @@ Support levels:
       </td>
     </tr>
     <tr>
-      <td>🔴</td>
+      <td>🟠</td>
       <td>
             <details>
               <summary><code>ObservableObjectPublisher</code></summary>
@@ -146,7 +146,7 @@ Support levels:
       <td><code>@ObservationIgnored</code></td>
     </tr>
     <tr>
-      <td>🔴</td>
+      <td>🟠</td>
       <td>
           <details>
               <summary><code>PassthroughSubject</code></summary>
@@ -162,7 +162,7 @@ Support levels:
       <td><code>@Published</code></td>
     </tr>
     <tr>
-      <td>🔴</td>
+      <td>🟠</td>
       <td>
           <details>
               <summary><code>Publisher</code></summary>
