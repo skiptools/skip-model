@@ -1,3 +1,10 @@
+## 0.7.0
+
+Released 2024-05-25
+
+  - Bump androidx-compose-bom to 2024.05.00
+  - Update API support table colors
+
 ## 0.6.0
 
 Released 2024-04-21
