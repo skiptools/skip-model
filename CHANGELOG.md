@@ -1,3 +1,10 @@
+## 0.8.0
+
+Released 2024-07-03
+
+  - Update the using the Kotlin 2 integrated compose compiler
+  - Bump androidx-compose-bom to 2024.06.00
+
 ## 0.7.0
 
 Released 2024-05-25
