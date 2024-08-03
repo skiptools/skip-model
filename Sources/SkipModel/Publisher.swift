@@ -43,6 +43,16 @@ extension Publisher {
     public func receive(on scheduler: Scheduler) -> Publisher<Output, Failure> {
         fatalError()
     }
+
+    public func eraseToAnyPublisher() -> AnyPublisher<Output, Failure> {
+        fatalError()
+    }
+}
+
+public final class AnyPublisher : Publisher {
+    public init(_ publisher: Publisher<Output, Failure>) {
+        fatalError()
+    }
 }
 
 public protocol ConnectablePublisher<Output, Failure> : Publisher {

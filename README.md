@@ -81,6 +81,18 @@ Support levels:
       </td>
     </tr>
     <tr>
+      <td>🟠</td>
+      <td>
+            <details>
+              <summary><code>AnyPublisher</code></summary>
+              <ul>
+                  <li><code>init(_ publisher: Publisher)</code></li>
+                  <li>See <code>Publisher</code></li>
+              </ul>
+          </details> 
+      </td>
+    </tr>
+    <tr>
       <td>🟢</td>
       <td>
           <details>
@@ -175,13 +187,14 @@ Support levels:
 <li><code>func filter(isIncluded: (Output) -> Boolean) -> Publisher</code></li>
 <li><code>func map&lt;T&gt;(transform: (Output) -> T) -> Publisher</code></li>
 <li><code>func receive(on: Scheduler): Publisher</code></li>
+<li><code>func eraseToAnyPublisher(): AnyPublisher</code></li>
               </ul>
           </details> 
       </td>
     </tr>
     <tr>
       <td>✅</td>
-      <td><code>func Timer.publish(every: TimeInterval, tolerance: TimeInterval? = nil, on runLoop: RunLoop, in mode: RunLoop.Mode, options: RunLoop.SchedulerOptions? = nil) -> ConnectablePublisher&lt;Date, Never&gt;</code></li>
+      <td><code>func Timer.publish(every: TimeInterval, tolerance: TimeInterval? = nil, on runLoop: RunLoop, in mode: RunLoop.Mode, options: RunLoop.SchedulerOptions? = nil) -> ConnectablePublisher&lt;Date, Never&gt;</code></td>
     </tr>
   </tbody>
 </table>

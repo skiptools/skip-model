@@ -47,6 +47,10 @@ interface Publisher<Output, Failure> {
     fun receive(on: Scheduler): Publisher<Output, Failure> {
         return ReceiveOn(this, on)
     }
+
+    fun eraseToAnyPublisher(): AnyPublisher<Output, Failure> {
+        return AnyPublisher(this)
+    }
 }
 
 interface ConnectablePublisher<Output, Failure> : Publisher<Output, Failure> {
@@ -59,6 +63,12 @@ interface ConnectablePublisher<Output, Failure> : Publisher<Output, Failure> {
 
 interface Subject<Output, Failure> : Publisher<Output, Failure> {
     fun send(value: Output)
+}
+
+class AnyPublisher<Output, Failure>(private val publisher: Publisher<Output, Failure>) : Publisher<Output, Failure> {
+    override fun sink(receiveValue: (Output) -> Unit): AnyCancellable = publisher.sink(receiveValue)
+
+    override fun eraseToAnyPublisher(): AnyPublisher<Output, Failure> = this
 }
 
 class PassthroughSubject<Output, Failure> : Subject<Output, Failure> {

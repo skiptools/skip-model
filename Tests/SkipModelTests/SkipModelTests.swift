@@ -92,6 +92,19 @@ final class SkipModelTests: XCTestCase {
         XCTAssertEqual(published, 4)
     }
 
+    func testEraseToAnyPublisher() {
+        let subject = PassthroughSubject<Int, Never>()
+        let publisher: AnyPublisher<Int, Never> = subject.eraseToAnyPublisher()
+
+        var published = -1
+        let cancellable = publisher.sink {
+            published = $0
+        }
+
+        subject.send(4)
+        XCTAssertEqual(published, 4)
+    }
+
     func testMap() {
         let model = Model()
         var published = ""
