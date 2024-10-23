@@ -1,4 +1,4 @@
-// Copyright 2023 Skip
+// Copyright 2024 Skip
 //
 // This is free software: you can redistribute and/or modify it
 // under the terms of the GNU Lesser General Public License 3.0
@@ -9,25 +9,39 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
 public final class MutableStateBacking: StateTracker {
-    private let stateCount: Int
-    private var state: List<MutableState<Int>>?
+    private var state: MutableList<MutableState<Int>>?
 
-    public init(stateCount: Int) {
-        self.stateCount = stateCount
+    public init() {
         StateTracking.register(self)
     }
 
     public func access(stateAt index: Int) {
-        let _ = state?[index].value
+        synchronized(self) {
+            if let state {
+                while state.size <= index {
+                    state.add(mutableStateOf(0))
+                }
+                let _ = state[index].value
+            }
+        }
     }
 
     public func update(stateAt index: Int) {
-        state?[index].value += 1
+        synchronized(self) {
+            if let state {
+                while state.size <= index {
+                    state.add(mutableStateOf(0))
+                }
+                state[index].value += 1
+            }
+        }
     }
 
     public func trackState() {
-        if state == nil {
-            state = List(stateCount) { _ in mutableStateOf(0) }
+        synchronized(self) {
+            if state == nil {
+                state = mutableListOf()
+            }
         }
     }
 }
