@@ -122,6 +122,25 @@ final class SkipModelTests: XCTestCase {
         XCTAssertEqual(published, "5")
     }
 
+    func testCombineLatest() {
+        let model = Model()
+        var published = (-1, "-")
+        let cancellable = model.$value.combineLatest(model.$value2)
+            .sink {
+                published = $0
+            }
+        XCTAssertEqual(published.0, 0)
+        XCTAssertEqual(published.1, "")
+        model.value = 5
+        XCTAssertEqual(published.0, 5)
+        XCTAssertEqual(published.1, "")
+        model.value2 = "a"
+        XCTAssertEqual(published.0, 5)
+        XCTAssertEqual(published.1, "a")
+
+        cancellable.cancel()
+    }
+
     func testStoreIn() {
         let model = Model()
         var cancellables: Set<AnyCancellable> = []
@@ -149,6 +168,7 @@ final class SkipModelTests: XCTestCase {
 
 class Model: ObservableObject {
     @Published var value = 0
+    @Published var value2 = ""
 }
 
 extension Notification.Name {

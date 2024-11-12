@@ -182,6 +182,9 @@ Support levels:
               <ul>
 <li><code>func assign&lt;Root&gt;(to: KeyPath&lt;Root, Output&gt;, on: Root) -> AnyCancellable</code></li>
 <li><code>func sink(receiveValue: (Output) -> Unit) -> AnyCancellable</code></li>
+<li><code>func combineLatest(_ with: Publisher) -> Publisher</code></li>
+<li><code>func combineLatest3(_ with0: Publisher, _ with1: Publisher) -> Publisher</code></li>
+<li><code>func combineLatest4(_ with0: Publisher, _ with1: Publisher, _ with2: Publisher) -> Publisher</code></li>
 <li><code>func debounce(for: Double, scheduler: Scheduler) -> Publisher</code></li>
 <li><code>func dropFirst(count: Int = 1) -> Publisher</code></li>
 <li><code>func filter(isIncluded: (Output) -> Boolean) -> Publisher</code></li>
