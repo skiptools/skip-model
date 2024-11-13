@@ -24,6 +24,18 @@ extension Publisher {
         fatalError()
     }
 
+    public func combineLatest<P>(_ publisher: Publisher<P, Failure>) -> Publisher<(Output, P), Failure> {
+        fatalError()
+    }
+
+    public func combineLatest3<P0, P1>(_ publisher0: Publisher<P0, Failure>, _ publisher1: Publisher<P1, Failure>) -> Publisher<(Output, P0, P1), Failure> {
+        fatalError()
+    }
+
+    public func combineLatest4<P0, P1, P2>(_ publisher0: Publisher<P0, Failure>, _ publisher1: Publisher<P1, Failure>, _ publisher2: Publisher<P2, Failure>) -> Publisher<(Output, P0, P1, P2), Failure> {
+        fatalError()
+    }
+
     public func debounce(for dueTime: Double, scheduler: Scheduler) -> Publisher<Output, Failure> {
         fatalError()
     }
