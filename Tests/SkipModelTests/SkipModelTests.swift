@@ -103,6 +103,7 @@ final class SkipModelTests: XCTestCase {
 
         subject.send(4)
         XCTAssertEqual(published, 4)
+        cancellable.cancel()
     }
 
     func testMap() {
