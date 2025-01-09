@@ -13,7 +13,7 @@ settings:
             - block: 'create("libs")'
               contents:
                 # note that SkipUI overrides the material3 lib within the bom to a newer version - see its skip.yml
-                - 'version("androidx-compose-bom", "2024.11.00")'
+                - 'version("androidx-compose-bom", "2024.12.01")'
                 - 'library("androidx-compose-bom", "androidx.compose", "compose-bom").versionRef("androidx-compose-bom")'
                 - 'library("androidx-compose-runtime", "androidx.compose.runtime", "runtime").withoutVersion()'
 

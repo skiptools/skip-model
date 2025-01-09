@@ -84,7 +84,7 @@ public final class StateTracking {
     }
 
     private static var isMainThread: Bool {
-        // Looper not mocked for Roboelectric and will cause test exceptions, so use `try`
+        // Looper not mocked for Robolectric and will cause test exceptions, so use `try`
         return try? (Looper.myLooper() == Looper.getMainLooper()) ?? false
     }
     #endif
