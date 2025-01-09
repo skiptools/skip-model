@@ -1,3 +1,9 @@
+## 1.4.2
+
+Released 2025-01-09
+
+  - Bump to androidx-compose-bom 2024.12.01 (#9)
+
 ## 1.0.0
 
 Released 2024-08-15
