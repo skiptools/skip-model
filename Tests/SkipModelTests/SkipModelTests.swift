@@ -124,10 +124,6 @@ final class SkipModelTests: XCTestCase {
         XCTAssertEqual(published, "5")
     }
 
-    #if canImport(OpenCombine)
-    // combineLatest missing in OpenCombine
-    // https://github.com/OpenCombine/OpenCombine/pull/119
-    #else
     func testCombineLatest() {
         let model = Model()
         var published = (-1, "-")
@@ -146,7 +142,6 @@ final class SkipModelTests: XCTestCase {
 
         cancellable.cancel()
     }
-    #endif
 
     func testStoreIn() {
         let model = Model()

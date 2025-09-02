@@ -20,7 +20,7 @@ let package = Package(
 
 #if !canImport(Combine)
 // on Linux we need to import OpenCombine to get ObservableObject
-package.dependencies += [.package(url: "https://github.com/OpenCombine/OpenCombine.git", from: "0.14.0")]
+package.dependencies += [.package(url: "https://github.com/OpenSwiftUIProject/OpenCombine.git", from: "0.15.1")]
 package.targets[0].dependencies += [.product(name: "OpenCombine", package: "OpenCombine")]
 package.targets[0].dependencies += [.product(name: "OpenCombineFoundation", package: "OpenCombine")]
 #endif
