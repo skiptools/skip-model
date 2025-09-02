@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only WITH LGPL-3.0-linking-exception
 #if canImport(OpenCombine)
 import OpenCombine
+import OpenCombineFoundation
 #else
 import Combine
 #endif
