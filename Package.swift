@@ -18,6 +18,12 @@ let package = Package(
     ]
 )
 
+#if !canImport(Combine)
+// on Linux we need to import OpenCombine to get ObservableObject
+package.dependencies += [.package(url: "https://github.com/OpenCombine/OpenCombine.git", from: "0.14.0")]
+package.targets[0].dependencies += [.product(name: "OpenCombine", package: "OpenCombine")]
+#endif
+
 if Context.environment["SKIP_BRIDGE"] ?? "0" != "0" {
     // all library types must be dynamic to support bridging
     package.products = package.products.map({ product in
