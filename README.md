@@ -1,6 +1,6 @@
 # SkipModel
 
-Model object observation for [Skip Lite](https://skip.dev) transpiled Swift. Parts of this package are also used by [Skip Fuse](https://skip.dev/docs/status/#skip_fuse) to bridge `@Observables` to Compose.
+Model object observation for [Skip Lite](https://skip.dev/docs/modes/#lite) transpiled Swift. Parts of this package are also used by [Skip Fuse](https://skip.dev/docs/modes/#fuse) to bridge `@Observables` to Compose.
 
 See what API is included [here](#api-support).
 
