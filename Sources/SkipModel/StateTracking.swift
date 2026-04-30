@@ -12,8 +12,22 @@ public protocol StateTracker {
     func trackState()
 }
 
+/// A neutral transaction marker for state mutations.
+///
+/// Higher-level UI packages can attach their own transaction objects here without
+/// making SkipModel depend on those packages.
+public protocol StateMutationTransaction: AnyObject {
+}
+
 /// Manage observable state tracking.
 public final class StateTracking {
+    /// The transaction currently attached to state writes.
+    public static var currentMutationTransaction: StateMutationTransaction? = nil
+
+    // Render ledger. Nil entries are meaningful: a state value written outside
+    // a mutation transaction must still line up with the matching animatable.
+    private static var mutationReadTransactions: [StateMutationTransaction?] = []
+
     #if SKIP
     private static var bodyDepth = 0
     private static let trackers: MutableList<StateTracker> = mutableListOf()
@@ -51,6 +65,9 @@ public final class StateTracking {
     public static func pushBody() {
         #if SKIP
         if isMainThread {
+            if bodyDepth == 0 {
+                clearMutationReads()
+            }
             bodyDepth += 1
             activateTrackers()
         }
@@ -65,6 +82,26 @@ public final class StateTracking {
             activateTrackers()
         }
         #endif
+    }
+
+    /// Record the transaction that last wrote a state value as that value is read while building render state.
+    public static func recordMutationRead(_ transaction: StateMutationTransaction?) {
+        mutationReadTransactions.append(transaction)
+    }
+
+    /// Consume the next recorded write transaction for an animatable value.
+    ///
+    /// This intentionally models a render ledger, not the current write scope.
+    public static func consumeMutationRead() -> StateMutationTransaction? {
+        guard !mutationReadTransactions.isEmpty else {
+            return nil
+        }
+        return mutationReadTransactions.removeFirst()
+    }
+
+    /// Clear recorded read transactions at a known lifecycle boundary.
+    public static func clearMutationReads() {
+        mutationReadTransactions.removeAll()
     }
 
     #if SKIP
