@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 
 public final class MutableStateBacking: StateTracker {
     private var state: MutableList<MutableState<Int>> = mutableListOf()
+    private var lastMutationTransactions: MutableList<StateMutationTransaction?> = mutableListOf()
     private var isTracking = false
 
     public init() {
@@ -15,6 +16,7 @@ public final class MutableStateBacking: StateTracker {
     public func access(stateAt index: Int) {
         synchronized(self) {
             initialize(stateAt: index)
+            StateTracking.recordMutationRead(lastMutationTransactions[index])
             let _ = state[index].value
         }
     }
@@ -22,6 +24,7 @@ public final class MutableStateBacking: StateTracker {
     public func update(stateAt index: Int) {
         synchronized(self) {
             initialize(stateAt: index)
+            lastMutationTransactions[index] = StateTracking.currentMutationTransaction
             // Only update state when tracking. We do, however, read state even when tracking has not begun.
             // Otherwise post-tracking updates may not cause recomposition
             if isTracking {
@@ -33,6 +36,7 @@ public final class MutableStateBacking: StateTracker {
     private func initialize(stateAt index: Int) {
         while state.size <= index {
             state.add(mutableStateOf(0))
+            lastMutationTransactions.add(nil)
         }
     }
 
