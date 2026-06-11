@@ -9,6 +9,17 @@ import XCTest
 /// every animatable modifier site.
 final class TransactionTrackingTests: XCTestCase {
 
+    override func setUp() {
+        #if SKIP
+        // Instrumented Android runs execute every test method in one process on the
+        // instrumentation thread — where the body-boundary cursor clears in
+        // pushBody/popBody are main-thread-gated no-ops — and JUnit method order varies
+        // by ART version, so per-thread cursor state left by one test (e.g. the
+        // boundary test's unconsumed recordRead) can poison a later one. Start clean.
+        StateTracking.resetForTesting()
+        #endif
+    }
+
     func testCaptureReadReturnsNilWhenNothingRead() throws {
         #if !SKIP
         throw XCTSkip("StateTracking transaction tracking is Android-only")
