@@ -16,12 +16,24 @@ public final class Observed<Value>: StateTracker {
     public var wrappedValue: Value {
         get {
             if let projectedValue {
+                // Skip the recordRead call entirely when no `withAnimation` ever wrote to us —
+                // the common case for non-animated state. Inside withAnimation the stamp is
+                // non-nil and we report it so animatable modifiers can pick it up.
+                if let tx = lastWriteTransaction {
+                    StateTracking.recordRead(tx)
+                }
                 return projectedValue.value
             } else {
                 return _wrappedValue
             }
         }
         set {
+            let tx = StateTracking.currentTransaction
+            // Only stamp when we have a tx to record OR we previously recorded one (so a plain
+            // write clears the stale tx). Avoids a ThreadLocal hit on every plain write.
+            if tx != nil || lastWriteTransaction != nil {
+                lastWriteTransaction = tx
+            }
             if let projectedValue {
                 projectedValue.value = newValue
             }
@@ -29,6 +41,7 @@ public final class Observed<Value>: StateTracker {
         }
     }
     private var _wrappedValue: Value
+    private var lastWriteTransaction: StateMutationTransaction?
 
     public var projectedValue: MutableState<Value>?
 
@@ -41,4 +54,3 @@ public final class Observed<Value>: StateTracker {
 }
 
 #endif
-
