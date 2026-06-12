@@ -51,8 +51,8 @@ public final class StateTracking {
     private static let transactionStack: ThreadLocal<MutableList<StateMutationTransaction>> = ThreadLocal()
 
     // Thread-local single-slot cursor that records the transaction of the most-recently-read
-    // tracked state. Consumed by `captureLastReadAndClear` at modifier call sites synthesized
-    // by `KotlinTransactionPropagationTransformer`.
+    // tracked state. Consumed by `captureLastReadAndClear` at the entry of each animatable
+    // modifier implementation in SkipUI.
     private static let readCursor: ThreadLocal<StateMutationTransaction?> = ThreadLocal()
     #endif
 
@@ -219,7 +219,7 @@ public final class StateTracking {
     /// Read and clear the read cursor in a single atomic operation.
     ///
     /// Synthesized by the transpiler at every animatable modifier call site as the value of the
-    /// modifier's trailing `__animTx:` argument. Because Kotlin evaluates function arguments
+    /// modifier's trailing `animTx:` argument. Because Kotlin evaluates function arguments
     /// left-to-right, this runs *after* the modifier's value arguments have been evaluated and so
     /// returns the transaction left behind by the most-recently-read tracked state inside them.
     /// Clearing on read prevents the cursor from leaking to a subsequent modifier in a chain.

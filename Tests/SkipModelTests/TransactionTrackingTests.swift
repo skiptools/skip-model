@@ -5,8 +5,8 @@ import XCTest
 
 /// Direct-mode tests of the `StateTracking` machinery that backs per-slot animation
 /// provenance: the per-thread transaction stack and the read cursor consumed by the
-/// transformer-emitted `__animTx = StateTracking.captureLastReadAndClear()` argument at
-/// every animatable modifier site.
+/// `animTx = StateTracking.captureLastReadAndClear()` capture at the entry of every
+/// animatable modifier implementation in SkipUI.
 final class TransactionTrackingTests: XCTestCase {
 
     override func setUp() {
@@ -187,9 +187,9 @@ final class TransactionTrackingTests: XCTestCase {
         #endif
     }
 
-    /// `captureLastReadAndClear` is what the transformer synthesizes at each animatable
-    /// modifier call site — it reads the cursor and resets it so a sibling modifier doesn't
-    /// pick up the same tx.
+    /// `captureLastReadAndClear` is what each animatable modifier implementation calls at
+    /// entry — it reads the cursor and resets it so a sibling modifier doesn't pick up the
+    /// same tx.
     func testCaptureLastReadAndClearReturnsAndClears() throws {
         #if !SKIP
         throw XCTSkip("StateTracking transaction tracking is Android-only")
