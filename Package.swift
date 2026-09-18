@@ -19,10 +19,14 @@ let package = Package(
 )
 
 #if !canImport(Combine)
-// on Linux we need to import OpenCombine to get ObservableObject
+// Only the tests use Combine natively (the SkipModel target's Swift is all `#if SKIP`),
+// so OpenCombine is a test-only dependency on Linux. Linking it into the SkipModel
+// product would statically embed OpenCombine into libSkipModel.so, and Swift 6.4's
+// swiftbuild engine rejects that whenever a Fuse app also links OpenCombine into its own
+// dynamic products ("linked as a static library by … This will result in duplication").
 package.dependencies += [.package(url: "https://github.com/OpenSwiftUIProject/OpenCombine.git", from: "0.15.1")]
-package.targets[0].dependencies += [.product(name: "OpenCombine", package: "OpenCombine")]
-package.targets[0].dependencies += [.product(name: "OpenCombineFoundation", package: "OpenCombine")]
+package.targets[1].dependencies += [.product(name: "OpenCombine", package: "OpenCombine")]
+package.targets[1].dependencies += [.product(name: "OpenCombineFoundation", package: "OpenCombine")]
 #endif
 
 // SKIP_DYNAMIC_LIBRARIES and SKIP_BRIDGE both enforce building as dynamic
