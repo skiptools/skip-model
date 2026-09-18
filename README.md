@@ -16,7 +16,7 @@ let package = Package(
         .library(name: "MyProduct", targets: ["MyTarget"]),
     ],
     dependencies: [
-        .package(url: "https://source.skip.dev/skip-model.git", from: "1.0.0"),
+        .package(url: "https://github.com/skiptools/skip-model.git", from: "1.0.0"),
     ],
     targets: [
         .target(name: "MyTarget", dependencies: [
@@ -32,7 +32,7 @@ SkipModel vends the `skip.model` Kotlin package. This package contains `Observab
 
 ## Dependencies
 
-SkipLib depends on the [skip](https://source.skip.dev/skip) transpiler plugin and the [SkipFoundation](https://source.skip.dev/skip-foundation) package.
+SkipLib depends on the [skip](https://github.com/skiptools/skip) transpiler plugin and the [SkipFoundation](https://github.com/skiptools/skip-foundation) package.
 
 SkipModel is part of the core *SkipStack* and is not intended to be imported directly. The transpiler includes `import skip.model.*` in generated Kotlin for any Swift source that imports the `Combine`, `Observation`, or `SwiftUI` frameworks.
 
