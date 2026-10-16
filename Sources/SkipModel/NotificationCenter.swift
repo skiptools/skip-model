@@ -7,9 +7,11 @@ import Foundation
 extension NotificationCenter {
     public func publisher(for name: Notification.Name, object: AnyObject? = nil) -> Publisher<Notification, Never> {
         let publisher = NotificationCenterPublisher(center: self)
+        let publisherReference = java.lang.ref.WeakReference(publisher)
         publisher.observer = addObserver(forName: name, object: object, queue: nil) {
-            publisher.send($0)
+            publisherReference.get()?.send($0)
         }
+
         return publisher
     }
 }
