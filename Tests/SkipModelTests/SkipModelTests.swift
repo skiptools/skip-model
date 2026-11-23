@@ -12,6 +12,19 @@ import XCTest
 final class SkipModelTests: XCTestCase {
     var published = -1
 
+    /// Body invalidation ids are unique, and invalidating an id that already fired or never
+    /// existed is a no-op: native observation callbacks can outlive the composition.
+    func testBodyInvalidationIDs() {
+        #if SKIP
+        let first = trackBodyInvalidation()
+        let second = trackBodyInvalidation()
+        XCTAssertNotEqual(first, second)
+        invalidateBody(id: first)
+        invalidateBody(id: first)
+        invalidateBody(id: Int.max)
+        #endif
+    }
+
     func testObjectWillChange() {
         let model = Model()
         var observed = -1
